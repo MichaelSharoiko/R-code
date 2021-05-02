@@ -1,0 +1,256 @@
+Michael Sharoiko
+
+Coding Examples
+1)  Confidence interval of wages and education with Correlation
+
+> wages<-c(30,20,20,40,40)
+> education<-c(15,12,13,16,18)
+> cor.test(wages,education)
+
+Pearson's product-moment correlation
+
+data:  wages and education
+t = 3.4641, df = 3, p-value = 0.04052
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ 0.0576676 0.9930528
+sample estimates:
+cor 
+0.8944272
+
+2)  Graph of Growth in per capita Income
+
+> percapita<-read.csv("Income Per Capita.csv",header=TRUE)
+> capinc1929<-percapita$percapitainc1929
+> growth<-percapita$Growth
+> attach(percapita)
+> plot(capinc1929,growth,main="Growth in Per Capita Income From 1929 to 2018",xlab="Per Capita Income in 1929",ylab="Growth Rate in Percent")
+> abline(lm(growth~capinc1929))
+ 
+3) How schooling affects hourly earnings based on excel data.
+
+> earnings<-read.table("earnings2019.csv",header=TRUE,sep=",")
+> ols1<-lm(l_EARNINGS~FEMALE+ETHBLACK+ETHHISP+AGE+S+MARRIED+ASVAB01+ASVAB02+HEIGHT+WEIGHT+EXP+HOURS+TENURE,data=earnings)
+> library(stargazer)
+> stargazer(ols1,type="text",digits=6,title="Table 1: Hourly Earnings Per hour(in dollars)")
+
+Table 1: Hourly Earnings Per hour(in dollars)
+===============================================
+                        Dependent variable:    
+                    ---------------------------
+                            l_EARNINGS         
+-----------------------------------------------
+FEMALE                     -0.212171***        
+                            (0.063470)         
+                                               
+ETHBLACK                     0.033989          
+                            (0.089528)         
+                                               
+ETHHISP                      0.061157          
+                            (0.089079)         
+                                               
+AGE                        -0.027424***        
+                            (0.009916)         
+                                               
+S                           0.088849***        
+                            (0.010677)         
+                                               
+MARRIED                      -0.019925         
+                            (0.045557)         
+                                               
+ASVAB01                      0.005178          
+                            (0.003358)         
+                                               
+ASVAB02                     0.006974**         
+                            (0.003255)         
+                                               
+HEIGHT                       0.015095*         
+                            (0.008218)         
+                                               
+WEIGHT                     -0.001824***        
+                            (0.000609)         
+                                               
+EXP                         0.031430***        
+                            (0.005863)         
+                                               
+HOURS                        0.000066          
+                            (0.002470)         
+                                               
+TENURE                      0.010871***        
+                            (0.003581)         
+                                               
+Constant                     0.887909          
+                            (0.666039)         
+                                               
+-----------------------------------------------
+Observations                    540            
+R2                           0.368746          
+Adjusted R2                  0.353144          
+Residual Std. Error     0.477734 (df = 526)    
+F Statistic         23.635520*** (df = 13; 526)
+===============================================
+Note:               *p<0.1; **p<0.05; ***p<0.01
+
+B.H_0:B_5=.10
+H_1:B_5≠.10
+t=(.10-.0888)/.0107=1.0467
+From R we get 
+qf(.990,2,526)
+[1] 4.645725
+Based on this result, we cannot reject the null hypothesis that the actual amount of hourly earnings that each additional year of schooling gives you is 8%.
+
+4) OLS test with Several Tests 
+> college<-read.table("colleges.csv",header=TRUE,sep=",")
+> lnkmedian<-log(college$kmedian)
+> lnparmedian<-log(college$parmedian)
+> olsu<-lm(lnkmedian~lnparmedian+public+private+ivyplus+otherelite+hselective+selective+northeast+midwest+west+pctfemale+pctmarried,data=college)
+> library(stargazer)
+> stargazer(olsu,type="text")
+
+===============================================
+                        Dependent variable:    
+                    ---------------------------
+                             lnkmedian         
+-----------------------------------------------
+lnparmedian                  0.374***          
+                              (0.021)          
+                                               
+public                        -0.038           
+                              (0.031)          
+                                               
+private                       -0.023           
+                              (0.030)          
+                                               
+ivyplus                      0.588***          
+                              (0.059)          
+                                               
+otherelite                   0.449***          
+                              (0.034)          
+                                               
+hselective                   0.395***          
+                              (0.029)          
+                                               
+selective                    0.282***          
+                              (0.022)          
+                                               
+northeast                    0.124***          
+                              (0.013)          
+                                               
+midwest                       0.030**          
+                              (0.013)          
+                                               
+west                           0.014           
+                              (0.016)          
+                                               
+pctfemale                    -0.004***         
+                             (0.0004)          
+                                               
+pctmarried                     0.001           
+                             (0.0005)          
+                                               
+Constant                     6.257***          
+                              (0.229)          
+                                               
+-----------------------------------------------
+Observations                   1,349           
+R2                             0.609           
+Adjusted R2                    0.606           
+Residual Std. Error      0.180 (df = 1336)     
+F Statistic         173.672*** (df = 12; 1336) 
+===============================================
+Note:               *p<0.1; **p<0.05; ***p<0.01
+
+Based on the results, it seems that the best college to attend for to maximize earnings at age 34 is an ivyplus school as it shows that that it gives the highest amount of additional earnings out of every other school.
+
+B) 
+Ramseys RESET
+> library(lmtest)
+> resettest(olsu)
+
+        RESET test
+
+data:  olsu
+RESET = 1.7083, df1 = 2, df2 = 1334, p-value = 0.1816
+
+Jarque‐Bera normality test
+
+> residuals<-resid(olsu)
+> jarque.bera.test(residuals)
+
+        Jarque Bera Test
+
+data:  residuals
+X-squared = 1330.6, df = 2, p-value < 2.2e-16
+
+Breusch‐Pagan test
+> residsq<-resid(olsu)^2
+> bptest<-lm(residsq~lnparmedian+public+private+ivyplus+otherelite+hselective+selective+northeast+midwest+west+pctfemale+pctmarried,data=college)
+> summary(bptest)
+
+Call:
+lm(formula = residsq ~ lnparmedian + public + private + ivyplus + 
+    otherelite + hselective + selective + northeast + midwest + 
+    west + pctfemale + pctmarried, data = college)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.14339 -0.02725 -0.01071  0.00554  1.43764 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  1.594e-01  1.023e-01   1.559 0.119286    
+lnparmedian -9.344e-03  9.588e-03  -0.974 0.329985    
+public       7.067e-02  1.401e-02   5.045 5.17e-07 ***
+private      7.827e-02  1.334e-02   5.867 5.59e-09 ***
+ivyplus     -9.958e-02  2.613e-02  -3.810 0.000145 ***
+otherelite  -7.997e-02  1.504e-02  -5.316 1.24e-07 ***
+hselective  -5.807e-02  1.312e-02  -4.425 1.04e-05 ***
+selective   -7.884e-02  9.950e-03  -7.924 4.82e-15 ***
+northeast    2.586e-02  5.889e-03   4.391 1.22e-05 ***
+midwest     -3.669e-03  5.996e-03  -0.612 0.540703    
+west         2.631e-02  6.964e-03   3.778 0.000165 ***
+pctfemale   -5.106e-04  1.637e-04  -3.119 0.001855 ** 
+pctmarried  -8.543e-05  2.181e-04  -0.392 0.695343    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.08022 on 1336 degrees of freedom
+Multiple R-squared:  0.09075,   Adjusted R-squared:  0.08259 
+F-statistic: 11.11 on 12 and 1336 DF,  p-value: < 2.2e-16
+
+C)
+> olsr<-lm(lnkmedian-lnparmedian~1,data=college)
+> RSSu<-sum(resid(olsu)^2)
+> RSSr<-sum(resid(olsr)^2)
+> Ftest<-((RSSr-RSSu)/12)/(RSSu/(1324))
+> Ftest
+[1] 115.1394
+> qf(.95,12,1324)
+[1] 1.759477
+
+We can conclude at the 5 percent level of significance that there is a difference between those who go to a public and private school when accounting for all other factors.
+
+D)
+> coeftest(olsu,vcov=vcovHC(olsu,type="HC0"))
+
+t test of coefficients:
+
+               Estimate  Std. Error t value  Pr(>|t|)    
+(Intercept)  6.25672784  0.31878797 19.6266 < 2.2e-16 ***
+lnparmedian  0.37378653  0.03077979 12.1439 < 2.2e-16 ***
+public      -0.03752859  0.04521962 -0.8299   0.40673    
+private     -0.02334923  0.04360905 -0.5354   0.59245    
+ivyplus      0.58808684  0.05938228  9.9034 < 2.2e-16 ***
+otherelite   0.44884004  0.04829130  9.2944 < 2.2e-16 ***
+hselective   0.39542798  0.04640689  8.5209 < 2.2e-16 ***
+selective    0.28196757  0.03967816  7.1064 1.933e-12 ***
+northeast    0.12436750  0.01450686  8.5730 < 2.2e-16 ***
+midwest      0.02989291  0.01114793  2.6815   0.00742 ** 
+west         0.01397149  0.01729513  0.8078   0.41933    
+pctfemale   -0.00366345  0.00050517 -7.2519 6.936e-13 ***
+pctmarried   0.00078845  0.00072847  1.0823   0.27930    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+
+
