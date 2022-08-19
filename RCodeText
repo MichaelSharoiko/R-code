@@ -1,33 +1,6 @@
-Michael Sharoiko
-
 Coding Examples
-1)  Confidence interval of wages and education with Correlation
 
-> wages<-c(30,20,20,40,40)
-> education<-c(15,12,13,16,18)
-> cor.test(wages,education)
-
-Pearson's product-moment correlation
-
-data:  wages and education
-t = 3.4641, df = 3, p-value = 0.04052
-alternative hypothesis: true correlation is not equal to 0
-95 percent confidence interval:
- 0.0576676 0.9930528
-sample estimates:
-cor 
-0.8944272
-
-2)  Graph of Growth in per capita Income
-
-> percapita<-read.csv("Income Per Capita.csv",header=TRUE)
-> capinc1929<-percapita$percapitainc1929
-> growth<-percapita$Growth
-> attach(percapita)
-> plot(capinc1929,growth,main="Growth in Per Capita Income From 1929 to 2018",xlab="Per Capita Income in 1929",ylab="Growth Rate in Percent")
-> abline(lm(growth~capinc1929))
- 
-3) How schooling affects hourly earnings based on excel data.
+How schooling affects hourly earnings based on excel data.
 
 > earnings<-read.table("earnings2019.csv",header=TRUE,sep=",")
 > ols1<-lm(l_EARNINGS~FEMALE+ETHBLACK+ETHHISP+AGE+S+MARRIED+ASVAB01+ASVAB02+HEIGHT+WEIGHT+EXP+HOURS+TENURE,data=earnings)
@@ -99,7 +72,7 @@ qf(.990,2,526)
 [1] 4.645725
 Based on this result, we cannot reject the null hypothesis that the actual amount of hourly earnings that each additional year of schooling gives you is 8%.
 
-4) OLS test with Several Tests 
+OLS test with Several Tests 
 > college<-read.table("colleges.csv",header=TRUE,sep=",")
 > lnkmedian<-log(college$kmedian)
 > lnparmedian<-log(college$parmedian)
